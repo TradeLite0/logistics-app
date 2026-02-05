@@ -115,7 +115,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            _shipment!.trackingNumber,
+                            _shipment!.trackingNumber ?? 'غير متوفر',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,

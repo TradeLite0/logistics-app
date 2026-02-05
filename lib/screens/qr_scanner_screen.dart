@@ -139,8 +139,15 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
 
     try {
       final orderService = OrderService();
+      final shipmentId = widget.shipmentId ?? _extractShipmentId(qrData);
+      if (shipmentId == null) {
+        _showError('كود QR غير صالح');
+        setState(() => _isProcessing = false);
+        return;
+      }
+      
       final result = await orderService.scanQRWithLocation(
-        shipmentId: widget.shipmentId ?? _extractShipmentId(qrData),
+        shipmentId: shipmentId,
         scanType: widget.scanType,
         qrData: qrData,
         latitude: _currentPosition!.latitude,
