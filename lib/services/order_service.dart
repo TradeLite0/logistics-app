@@ -155,26 +155,6 @@ class OrderService {
     }
   }
 
-  /// 📦 جلب شحنات العميل
-  Future<Map<String, dynamic>> getClientShipments() async {
-    try {
-      final token = await _authService.getToken();
-      
-      final response = await http.get(
-        Uri.parse('$_baseUrl/shipments'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      return jsonDecode(response.body);
-    } catch (e) {
-      print('Error getting shipments: $e');
-      return {'success': false, 'message': 'خطأ في الاتصال'};
-    }
-  }
-
   /// 📦 إنشاء شحنة جديدة
   Future<Map<String, dynamic>> createShipment({
     required String customerName,

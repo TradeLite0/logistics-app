@@ -273,5 +273,5 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
-  );
+  }
 }

@@ -167,7 +167,6 @@ class AuthService {
       await prefs.setInt('verify_time_$phone', DateTime.now().millisecondsSinceEpoch);
 
       // 🔔 إرسال الكود عبر WhatsApp API الخاص بـ Clawdbot
-      // هنا بنستخدم الـ API اللي احنا شغالين عليه
       final response = await http.post(
         Uri.parse('$_baseUrl/whatsapp/send'),
         headers: {'Content-Type': 'application/json'},
@@ -336,12 +335,6 @@ class AuthService {
     }
   }
 
-  /// 🔑 الحصول على التوكن
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('jwt_token');
-  }
-
   /// 👤 الحصول على بيانات المستخدم
   Future<Map<String, dynamic>> getUserData() async {
     try {
@@ -362,12 +355,5 @@ class AuthService {
     } catch (e) {
       return {'success': false, 'message': 'خطأ في الاتصال: $e'};
     }
-  }
-
-  /// 🚪 تسجيل الخروج
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('jwt_token');
-    await prefs.remove('user_data');
   }
 }

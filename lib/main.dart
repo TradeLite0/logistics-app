@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'dart:io';
 import 'screens/gps_lock_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';

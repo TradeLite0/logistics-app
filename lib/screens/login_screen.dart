@@ -78,12 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
         // حفظ التوكن
         await _authService.saveToken(result.token!);
         
+        // الحصول على بيانات المستخدم المحفوظة
+        final user = await _authService.getCurrentUser();
+        
         if (mounted) {
           // الانتقال للشاشة الرئيسية حسب نوع المستخدم
           String route;
-          if (result.user?.type == 'driver') {
+          if (user?.type == 'driver') {
             route = '/driver_dashboard';
-          } else if (result.user?.type == 'client') {
+          } else if (user?.type == 'client') {
             route = '/client_dashboard';
           } else {
             route = '/admin'; // للمشرفين

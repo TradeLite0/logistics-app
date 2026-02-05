@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+// import 'package:mobile_scanner/mobile_scanner.dart';  // Commented out - dependency not in pubspec.yaml
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import '../services/order_service.dart';
@@ -269,16 +269,25 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           // مساحة الكاميرا
           Expanded(
             child: _isScanning && _currentPosition != null
-                ? MobileScanner(
-                    onDetect: (capture) {
-                      final List<Barcode> barcodes = capture.barcodes;
-                      for (final barcode in barcodes) {
-                        if (barcode.rawValue != null) {
-                          _onQRCodeDetected(barcode.rawValue!);
-                          break;
-                        }
-                      }
-                    },
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.qr_code_scanner,
+                          size: 100,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'ماسح QR غير متاح حالياً',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 : _isProcessing
                     ? const Center(
