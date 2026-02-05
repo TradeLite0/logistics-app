@@ -20,23 +20,21 @@ jobs:
     
     - name: Get dependencies
       run: flutter pub get
-      working-directory: ./logistics_app
     
     - name: Build APK
       run: flutter build apk --release
-      working-directory: ./logistics_app
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release
-        path: logistics_app/build/app/outputs/flutter-apk/app-release.apk
+        path: build/app/outputs/flutter-apk/app-release.apk
     
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
-        files: logistics_app/build/app/outputs/flutter-apk/app-release.apk
+        files: build/app/outputs/flutter-apk/app-release.apk
         tag_name: v${{ github.run_number }}
         name: Release v${{ github.run_number }}
       env:
