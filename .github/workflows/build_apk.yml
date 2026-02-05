@@ -28,8 +28,8 @@ jobs:
         # Clear current directory content except .git
         find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
         
-        # Create new flutter project here
-        flutter create . --org com.logistics.app
+        # Create new flutter project here (with valid name)
+        flutter create . --org com.logistics.app --project-name logistics_app
         
         # Copy our code back
         rm -rf lib
