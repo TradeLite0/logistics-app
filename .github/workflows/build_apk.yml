@@ -18,6 +18,19 @@ jobs:
         flutter-version: '3.16.0'
         channel: 'stable'
     
+    - name: Create Flutter Project
+      run: |
+        # Create new flutter project
+        flutter create temp_project --org com.logistics.app
+        # Copy our code to the project
+        cp -r lib/* temp_project/lib/
+        cp pubspec.yaml temp_project/
+        # Move project files to root
+        rm -rf android ios
+        mv temp_project/android .
+        mv temp_project/ios .
+        rm -rf temp_project
+    
     - name: Get dependencies
       run: flutter pub get
     
