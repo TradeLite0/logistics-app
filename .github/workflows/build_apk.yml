@@ -11,6 +11,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        path: source_code
     
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -20,23 +22,18 @@ jobs:
     
     - name: Build APK
       run: |
-        # Create flutter project in /tmp
-        cd /tmp
+        # Create flutter project in home directory (away from any pubspec.yaml)
+        cd ~
         flutter create logistics_app --org com.logistics.app
         
-        # Copy only lib folder
-        cp -r $GITHUB_WORKSPACE/lib/* logistics_app/lib/
+        # Copy lib folder from source
+        cp -r $GITHUB_WORKSPACE/source_code/lib/* logistics_app/lib/
         
-        # Read dependencies from our pubspec.yaml and add to generated one
+        # Go to project
         cd logistics_app
         
-        # Add dependencies to generated pubspec.yaml
-        cat >> pubspec.yaml << 'EOF'
-        
-        # Additional dependencies
-        dependencies:
-          flutter:
-            sdk: flutter
+        # Replace pubspec.yaml dependencies section
+        cat > deps.txt << 'DEPS'
           http: ^1.1.0
           shared_preferences: ^2.2.2
           url_launcher: ^6.2.2
@@ -52,30 +49,30 @@ jobs:
           qr_flutter: ^4.1.0
           pull_to_refresh: ^2.0.0
           connectivity_plus: ^5.0.2
+        DEPS
         
-        flutter:
-          uses-material-design: true
-        EOF
+        # Add deps to pubspec.yaml after "dependencies:"
+        sed -i '/^dependencies:/r deps.txt' pubspec.yaml
         
         # Build
         flutter pub get
         flutter build apk --release
         
-        # Copy APK
-        mkdir -p $GITHUB_WORKSPACE/build/app/outputs/flutter-apk
-        cp build/app/outputs/flutter-apk/app-release.apk $GITHUB_WORKSPACE/build/app/outputs/flutter-apk/
+        # Copy APK back to workspace
+        mkdir -p $GITHUB_WORKSPACE/source_code/build/app/outputs/flutter-apk
+        cp build/app/outputs/flutter-apk/app-release.apk $GITHUB_WORKSPACE/source_code/build/app/outputs/flutter-apk/
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release
-        path: build/app/outputs/flutter-apk/app-release.apk
+        path: source_code/build/app/outputs/flutter-apk/app-release.apk
     
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
-        files: build/app/outputs/flutter-apk/app-release.apk
+        files: source_code/build/app/outputs/flutter-apk/app-release.apk
         tag_name: v${{ github.run_number }}
         name: Release v${{ github.run_number }}
       env:
