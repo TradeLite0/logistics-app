@@ -20,25 +20,22 @@ jobs:
     
     - name: Create Flutter Project and Build
       run: |
-        # Save our code temporarily
-        mkdir -p /tmp/our_code
-        cp -r lib /tmp/our_code/
-        cp pubspec.yaml /tmp/our_code/
+        # Create new flutter project in subdirectory
+        flutter create build_project --org com.logistics.app --project-name logistics_app
         
-        # Clear current directory content except .git
-        find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+        # Copy our code to the project
+        cp -r lib/* build_project/lib/
+        cp pubspec.yaml build_project/
         
-        # Create new flutter project here (with valid name)
-        flutter create . --org com.logistics.app --project-name logistics_app
-        
-        # Copy our code back
-        rm -rf lib
-        cp -r /tmp/our_code/lib .
-        cp /tmp/our_code/pubspec.yaml .
-        
-        # Get dependencies and build
+        # Build in the project directory
+        cd build_project
         flutter pub get
         flutter build apk --release
+        
+        # Copy APK back
+        cd ..
+        mkdir -p build/app/outputs/flutter-apk
+        cp build_project/build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
