@@ -18,22 +18,27 @@ jobs:
         flutter-version: '3.16.0'
         channel: 'stable'
     
-    - name: Create Flutter Project and Build
+    - name: Remove old pubspec
+      run: rm -f pubspec.yaml
+    
+    - name: Create Flutter Project
+      run: flutter create build_project --org com.logistics.app --project-name logistics_app
+    
+    - name: Copy Code
       run: |
-        # Create new flutter project in subdirectory
-        flutter create build_project --org com.logistics.app --project-name logistics_app
-        
-        # Copy our code to the project
         cp -r lib/* build_project/lib/
         cp pubspec.yaml build_project/
-        
-        # Build in the project directory
-        cd build_project
-        flutter pub get
-        flutter build apk --release
-        
-        # Copy APK back
-        cd ..
+    
+    - name: Get Dependencies
+      working-directory: ./build_project
+      run: flutter pub get
+    
+    - name: Build APK
+      working-directory: ./build_project
+      run: flutter build apk --release
+    
+    - name: Copy APK
+      run: |
         mkdir -p build/app/outputs/flutter-apk
         cp build_project/build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/
     
